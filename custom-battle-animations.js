@@ -10,26 +10,31 @@
         return !!document.hidden || !!window.pksEffekseer?.isSuspended?.();
     }
 
+    function isOpponent(obj) {
+        const side = obj?.side;
+        const battle = side?.battle || obj?.battle;
+        if (!side || !battle) return obj?.side?.n === 1;
+        return side.n === battle.yourSide?.n;
+    }
+
     function getSelfEffectTransform(sprite) {
         return {
             pos: [0, 0, 0],
-            rot: sprite?.side?.n === 1 ? [0, 180, 0] : [0, 0, 0],
+            rot: isOpponent(sprite) ? [0, 180, 0] : [0, 0, 0],
         };
     }
 
     function getAttackEffectTransform(attacker) {
-        const attackerSide = attacker?.side?.n === 1 ? 1 : 0;
         return {
             pos: [0, 0, 0],
-            rot: attackerSide === 1 ? [0, 180, 0] : [0, 0, 0],
+            rot: isOpponent(attacker) ? [0, 180, 0] : [0, 0, 0],
         };
     }
 
     function getSummonEffectTransform(pokemon) {
-        const summonSide = pokemon?.side?.n === 1 ? 1 : 0;
         return {
             pos: [0, 0, 0],
-            rot: summonSide === 1 ? [0, 180, 0] : [0, 0, 0],
+            rot: isOpponent(pokemon) ? [0, 180, 0] : [0, 0, 0],
         };
     }
 
@@ -352,6 +357,7 @@
                     const sprite = p.sprite;
                     if (sprite) {
                         sprite.side = p.side;
+                        sprite.battle = p.battle;
                     }
                     return sprite;
                 });
